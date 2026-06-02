@@ -1,10 +1,6 @@
-import { Link, useLocation } from 'react-router-dom';
-import { WalletConnectButton } from './Wallet/WalletConnectButton';
-import { Text } from './Text';
-import { useState } from 'react';
-import { Menu } from 'lucide-react';
-import MobileDrawer from './MobileDrawer';
-import './Layout.css';
+import { Link, useLocation } from "react-router-dom";
+import { WalletConnectButton } from "./Wallet/WalletConnectButton";
+import { Text } from "./Text";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,58 +12,77 @@ export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div
+      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+    >
       <header className="site-header">
         <div className="header-brand">
           <Link to="/" className="header-link" aria-label="Disciplr home">
-            <Text role="title" as="span">Disciplr</Text>
+            <Text role="title" as="span">
+              Disciplr
+            </Text>
           </Link>
-          <NavLink to="/transactions" className="header-link" ariaLabel="Transactions">
-            Transactions
-          </NavLink>
+          <Link
+            to="/transactions"
+            className="header-link"
+            style={{
+              color:
+                location.pathname === "/transactions"
+                  ? "var(--accent)"
+                  : "var(--muted)",
+            }}
+            aria-label="Transactions"
+          >
+            <span className="header-transactions-label">Transactions</span>
+            {/* Icon fallback on very small screens */}
+            <span
+              aria-hidden="true"
+              className="header-transactions-icon"
+              style={{ display: "none" }}
+            >
+              ↗
+            </span>
+          </Link>
         </div>
 
-        {/* Hamburger button for mobile */}
-        <button
-          className="mobile-hamburger"
-          aria-label="Open navigation drawer"
-          aria-controls="mobile-drawer"
-          aria-expanded={isDrawerOpen}
-          onClick={toggleDrawer}
-        >
-          <Menu size={28} />
-        </button>
+        <nav style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            <Link
+              to="/"
+              className="header-link"
+              style={{
+                color:
+                  location.pathname === "/" ? "var(--accent)" : "var(--muted)",
+              }}
+            >
+              <Text role="caption" as="span">
+                Home
+              </Text>
+            </Link>
 
-        <nav className="desktop-nav" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>    
-          <Link
-            to="/"
-            className="header-link"
-            style={{ color: location.pathname === '/' ? 'var(--accent)' : 'var(--muted)' }}
-          >
-            <Text role="caption" as="span">Home</Text>
-          </Link>
+            <Link
+              to="/analytics"
+              style={{
+                color:
+                  location.pathname === "/analytics"
+                    ? "var(--accent)"
+                    : "var(--muted)",
+                textDecoration: "none",
+              }}
+            >
+              Analytics
+            </Link>
 
-          <Link
-            to="/analytics"
-            style={{
-              color: location.pathname === '/analytics' ? 'var(--accent)' : 'var(--muted)',
-              textDecoration: 'none',
-            }}
-          >
-            Analytics
-          </Link>
-          
-          <Link
+            <Link
               to="/vaults/create"
               style={{
-                color: 'var(--surface)',
-                background: 'var(--accent)',
-                padding: '0.5rem 1rem',
-                borderRadius: '9999px',
-                textDecoration: 'none',
+                color: "var(--surface)",
+                background: "var(--accent)",
+                padding: "0.5rem 1rem",
+                borderRadius: "9999px",
+                textDecoration: "none",
                 fontWeight: 500,
-                fontSize: '0.875rem',
+                fontSize: "0.875rem",
               }}
             >
               Create Vault
@@ -81,10 +96,10 @@ export default function Layout({ children }: LayoutProps) {
       <main
         style={{
           flex: 1,
-          padding: 'var(--spacing-8)',
-          maxWidth: 960,
-          margin: '0 auto',
-          width: '100%',
+          padding: "var(--spacing-8)",
+          maxWidth: "var(--container-standard)",
+          margin: "0 auto",
+          width: "100%",
         }}
       >
         {children}
