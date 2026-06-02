@@ -22,16 +22,9 @@ export default function Layout({ children }: LayoutProps) {
           <Link to="/" className="header-link" aria-label="Disciplr home">
             <Text role="title" as="span">Disciplr</Text>
           </Link>
-          <Link
-            to="/transactions"
-            className="header-link"
-            style={{ color: location.pathname === '/transactions' ? 'var(--accent)' : 'var(--muted)' }}
-            aria-label="Transactions"
-          >
-            <span className="header-transactions-label">Transactions</span>
-            {/* Icon fallback on very small screens */}
-            <span aria-hidden="true" className="header-transactions-icon" style={{ display: 'none' }}>↗</span>
-          </Link>
+          <NavLink to="/transactions" className="header-link" ariaLabel="Transactions">
+            Transactions
+          </NavLink>
         </div>
 
         {/* Hamburger button for mobile */}
@@ -74,7 +67,7 @@ export default function Layout({ children }: LayoutProps) {
                 borderRadius: '9999px',
                 textDecoration: 'none',
                 fontWeight: 500,
-                fontSize: '0.875rem'
+                fontSize: '0.875rem',
               }}
             >
               Create Vault
@@ -85,16 +78,17 @@ export default function Layout({ children }: LayoutProps) {
         <MobileDrawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)} />
       </header>
 
-      <main style={{
-        flex: 1,
-        padding: 'var(--spacing-8)',
-        maxWidth: 960,
-        margin: '0 auto',
-        width: '100%',
-      }}>
+      <main
+        style={{
+          flex: 1,
+          padding: 'var(--spacing-8)',
+          maxWidth: 960,
+          margin: '0 auto',
+          width: '100%',
+        }}
+      >
         {children}
       </main>
     </div>
   );
 }
-
