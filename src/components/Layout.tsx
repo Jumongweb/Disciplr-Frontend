@@ -1,13 +1,20 @@
-import { Link } from 'react-router-dom';
-import NavLink from './NavLink';
+import { Link, useLocation } from 'react-router-dom';
 import { WalletConnectButton } from './Wallet/WalletConnectButton';
 import { Text } from './Text';
+import { useState } from 'react';
+import { Menu } from 'lucide-react';
+import MobileDrawer from './MobileDrawer';
+import './Layout.css';
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 export default function Layout({ children }: LayoutProps) {
+  const [isDrawerOpen, setDrawerOpen] = useState(false);
+  const toggleDrawer = () => setDrawerOpen(prev => !prev);
+  const location = useLocation();
+
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <header className="site-header">
@@ -20,15 +27,38 @@ export default function Layout({ children }: LayoutProps) {
           </NavLink>
         </div>
 
-        <nav style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <NavLink to="/" className="header-link" ariaLabel="Home">
-              <Text role="caption" as="span">Home</Text>
-            </NavLink>
-            <NavLink to="/analytics" className="header-link" ariaLabel="Analytics">
-              Analytics
-            </NavLink>
-            <Link
+        {/* Hamburger button for mobile */}
+        <button
+          className="mobile-hamburger"
+          aria-label="Open navigation drawer"
+          aria-controls="mobile-drawer"
+          aria-expanded={isDrawerOpen}
+          onClick={toggleDrawer}
+        >
+          <Menu size={28} />
+        </button>
+
+        <nav className="desktop-nav" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>    
+          <Link
+            to="/"
+            className="header-link"
+            style={{ color: location.pathname === '/' ? 'var(--accent)' : 'var(--muted)' }}
+          >
+            <Text role="caption" as="span">Home</Text>
+          </Link>
+
+          <Link
+            to="/analytics"
+            style={{
+              color: location.pathname === '/analytics' ? 'var(--accent)' : 'var(--muted)',
+              textDecoration: 'none',
+            }}
+          >
+            Analytics
+          </Link>
+          
+          <Link
               to="/vaults/create"
               style={{
                 color: 'var(--surface)',
@@ -45,6 +75,7 @@ export default function Layout({ children }: LayoutProps) {
             <WalletConnectButton />
           </div>
         </nav>
+        <MobileDrawer isOpen={isDrawerOpen} onClose={() => setDrawerOpen(false)} />
       </header>
 
       <main
