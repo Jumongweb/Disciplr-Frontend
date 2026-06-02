@@ -29,7 +29,7 @@ describe('Home page hero', () => {
         <Home />
       </MemoryRouter>
     );
-    const headline = screen.getByRole('heading', { level: 1, name: /Stake & Secure Your Goals with Disciplr/i });
+    const headline = screen.getByRole('heading', { level: 1, name: /Secure Time‑Locked Capital Vaults on Stellar/i });
     expect(headline).toBeInTheDocument();
     const subheadline = screen.getByText(/Time‑locked capital vaults on Stellar that release on validation or redirect on failure\./i);
     expect(subheadline).toBeInTheDocument();

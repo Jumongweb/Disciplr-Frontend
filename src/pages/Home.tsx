@@ -12,7 +12,7 @@ export default function Home() {
           <Shield size={64} style={{ color: 'var(--primary)', marginBottom: 'var(--space-4)' }} />
         </div>
         <Text role="display" as="h1" style={{ marginBottom: 'var(--space-4)', maxWidth: '800px', marginLeft: 'auto', marginRight: 'auto' }}>
-          Stake & Secure Your Goals with Disciplr
+          Secure Time‑Locked Capital Vaults on Stellar
         </Text>
         <Text role="body" as="p" style={{ color: 'var(--muted)', marginBottom: 'var(--space-8)', maxWidth: '600px', marginLeft: 'auto', marginRight: 'auto', fontSize: 'var(--text-lg)' }}>
           Time‑locked capital vaults on Stellar that release on validation or redirect on failure.
