@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
-import { Text } from "../components/Text";
+import { Link } from 'react-router-dom'
+import { Text } from '../components/Text';
+import VaultCard from '../components/VaultCard';
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type VaultStatus = "active" | "pending_validation" | "completed" | "failed";
@@ -416,103 +417,18 @@ export default function Dashboard() {
               to="/vaults"
             />
             {hasVaults ? (
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "0.75rem",
-                }}
-              >
-                {VAULTS.map((v) => (
-                  <div
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                {VAULTS.map(v => (
+                  <VaultCard
                     key={v.id}
-                    style={{
-                      background: "var(--bg)",
-                      border: "1px solid var(--border)",
-                      borderRadius: "var(--radius)",
-                      padding: "0.875rem 1rem",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "flex-start",
-                        flexWrap: "wrap",
-                        gap: 8,
-                        marginBottom: "0.5rem",
-                      }}
-                    >
-                      <div>
-                        <Text
-                          role="body"
-                          as="div"
-                          style={{ fontWeight: 600, marginBottom: 2 }}
-                        >
-                          {v.name}
-                        </Text>
-                        <Text
-                          role="caption"
-                          as="div"
-                          style={{ color: "var(--accent)", fontWeight: 700 }}
-                        >
-                          {v.amount.toLocaleString()} {v.currency}
-                        </Text>
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: 8,
-                        }}
-                      >
-                        <StatusBadge status={v.status} />
-                        <Link
-                          to={`/vaults/${v.id}`}
-                          style={{
-                            color: "var(--accent)",
-                            fontSize: 13,
-                            whiteSpace: "nowrap",
-                          }}
-                        >
-                          View →
-                        </Link>
-                      </div>
-                    </div>
-                    {/* Progress bar */}
-                    <div
-                      style={{
-                        height: 4,
-                        background: "var(--border)",
-                        borderRadius: 2,
-                        overflow: "hidden",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: "100%",
-                          width: `${v.progressPct}%`,
-                          background:
-                            v.status === "pending_validation"
-                              ? "var(--warning)"
-                              : "var(--accent)",
-                          borderRadius: 2,
-                        }}
-                      />
-                    </div>
-                    <Text
-                      role="caption"
-                      as="div"
-                      style={{ color: "var(--muted)", marginTop: 4 }}
-                    >
-                      {v.progressPct}% elapsed · deadline{" "}
-                      {new Date(v.deadline).toLocaleDateString("en-US", {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })}
-                    </Text>
-                  </div>
+                    id={v.id}
+                    name={v.name}
+                    amount={v.amount}
+                    currency={v.currency}
+                    status={v.status}
+                    deadline={v.deadline}
+                    progressPct={v.progressPct}
+                  />
                 ))}
               </div>
             ) : (
