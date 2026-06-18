@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
+import { CountdownDeadline } from "../components/CountdownDeadline";
 import { Text } from "../components/Text";
 
-// ── Types ─────────────────────────────────────────────────────────────────────
+// ?? Types ?????????????????????????????????????????????????????????????????????
 type VaultStatus =
   | "active"
   | "completed"
@@ -47,7 +48,7 @@ interface Vault {
   transactions: VaultTransaction[];
 }
 
-// ── Mock Data ─────────────────────────────────────────────────────────────────
+// ?? Mock Data ?????????????????????????????????????????????????????????????????
 const MOCK_VAULTS: Record<string, Vault> = {
   "1": {
     id: "1",
@@ -182,7 +183,7 @@ const MOCK_VAULTS: Record<string, Vault> = {
   },
 };
 
-// ── Helpers ───────────────────────────────────────────────────────────────────
+// ?? Helpers ???????????????????????????????????????????????????????????????????
 const STATUS_CONFIG: Record<
   VaultStatus,
   { label: string; color: string; bg: string }
@@ -256,15 +257,6 @@ function fmtDateTime(iso: string): string {
   });
 }
 
-function timeRemaining(deadline: string): string {
-  const diff = new Date(deadline).getTime() - Date.now();
-  if (diff <= 0) return "Expired";
-  const days = Math.floor(diff / 86400000);
-  const hours = Math.floor((diff % 86400000) / 3600000);
-  if (days > 0) return `${days}d ${hours}h remaining`;
-  return `${hours}h remaining`;
-}
-
 function timelineProgress(created: string, deadline: string): number {
   const start = new Date(created).getTime();
   const end = new Date(deadline).getTime();
@@ -272,7 +264,7 @@ function timelineProgress(created: string, deadline: string): number {
   return Math.min(100, Math.max(0, ((now - start) / (end - start)) * 100));
 }
 
-// ── Copy Button ───────────────────────────────────────────────────────────────
+// ?? Copy Button ???????????????????????????????????????????????????????????????
 function CopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false);
   const copy = () => {
@@ -295,12 +287,12 @@ function CopyButton({ value }: { value: string }) {
         lineHeight: 1,
       }}
     >
-      {copied ? "✓" : "⎘"}
+      {copied ? "?" : "?"}
     </button>
   );
 }
 
-// ── Address Row ───────────────────────────────────────────────────────────────
+// ?? Address Row ???????????????????????????????????????????????????????????????
 function AddrRow({ label, value }: { label: string; value: string }) {
   return (
     <div
@@ -329,7 +321,7 @@ function AddrRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-// ── Section Card ─────────────────────────────────────────────────────────────
+// ?? Section Card ?????????????????????????????????????????????????????????????
 function Card({
   children,
   style,
@@ -352,7 +344,7 @@ function Card({
   );
 }
 
-// ── Main Component ────────────────────────────────────────────────────────────
+// ?? Main Component ????????????????????????????????????????????????????????????
 export default function VaultDetail() {
   const { id } = useParams<{ id: string }>();
   const vault = id ? MOCK_VAULTS[id] : undefined;
@@ -371,7 +363,7 @@ export default function VaultDetail() {
           No vault with ID "{id}" exists.
         </Text>
         <Link to="/vaults" style={{ color: "var(--accent)" }}>
-          ← Back to Vaults
+          ? Back to Vaults
         </Link>
       </div>
     );
@@ -400,10 +392,10 @@ export default function VaultDetail() {
           marginBottom: "1.25rem",
         }}
       >
-        ← Back to Vaults
+        ? Back to Vaults
       </Link>
 
-      {/* ── Header ── */}
+      {/* ?? Header ?? */}
       <Card style={{ marginBottom: "1.25rem" }}>
         <div
           style={{
@@ -476,7 +468,7 @@ export default function VaultDetail() {
         </div>
       </Card>
 
-      {/* ── Timeline ── */}
+      {/* ?? Timeline ?? */}
       <Card style={{ marginBottom: "1.25rem" }}>
         <Text
           role="caption"
@@ -537,13 +529,7 @@ export default function VaultDetail() {
             Created {fmtDate(vault.createdAt)}
           </Text>
           {isActive ? (
-            <Text
-              role="caption"
-              as="span"
-              style={{ color: "var(--accent)", fontWeight: 600 }}
-            >
-              {timeRemaining(vault.deadline)}
-            </Text>
+            <CountdownDeadline deadline={vault.deadline} />
           ) : (
             <Text
               role="caption"
@@ -559,7 +545,7 @@ export default function VaultDetail() {
         </div>
       </Card>
 
-      {/* ── Info + Addresses ── */}
+      {/* ?? Info + Addresses ?? */}
       <div
         style={{
           display: "grid",
@@ -624,7 +610,7 @@ export default function VaultDetail() {
         </Card>
       </div>
 
-      {/* ── Milestones ── */}
+      {/* ?? Milestones ?? */}
       <Card style={{ marginBottom: "1.25rem" }}>
         <Text
           role="caption"
@@ -703,7 +689,7 @@ export default function VaultDetail() {
                     rel="noopener noreferrer"
                     style={{ fontSize: 12, color: "var(--accent)" }}
                   >
-                    View evidence ↗
+                    View evidence ?
                   </a>
                 )}
               </div>
@@ -712,7 +698,7 @@ export default function VaultDetail() {
         </div>
       </Card>
 
-      {/* ── Transactions ── */}
+      {/* ?? Transactions ?? */}
       <Card>
         <Text
           role="caption"
@@ -788,7 +774,7 @@ export default function VaultDetail() {
                     rel="noopener noreferrer"
                     style={{ color: "var(--accent)", fontSize: 11 }}
                   >
-                    ↗
+                    ?
                   </a>
                 </div>
               </div>
@@ -800,7 +786,7 @@ export default function VaultDetail() {
   );
 }
 
-// ── Small helpers ─────────────────────────────────────────────────────────────
+// ?? Small helpers ?????????????????????????????????????????????????????????????
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div
