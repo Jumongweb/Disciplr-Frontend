@@ -1,7 +1,11 @@
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
-import { describe, expect, it } from 'vitest';
+import { vi, describe, expect, it } from 'vitest';
 import VaultDetail from '../VaultDetail';
+
+vi.mock('../../context/WalletContext', () => ({
+  useWallet: () => ({ network: 'TESTNET' }),
+}));
 
 function renderVaultDetail(id: string) {
   return render(

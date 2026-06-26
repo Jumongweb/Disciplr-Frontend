@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import PendingValidations from '../PendingValidations';
 import { useVerifierStore } from '../../Zustand/Store';
@@ -60,8 +60,14 @@ function renderPage() {
 
 describe('PendingValidations', () => {
   beforeEach(() => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-06-21T00:00:00Z'));
     vi.clearAllMocks();
     (useVerifierStore as any).mockReturnValue({ pendingValidations: makeTasks() });
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('renders the page heading', () => {
