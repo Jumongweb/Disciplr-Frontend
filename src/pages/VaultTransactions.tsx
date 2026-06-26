@@ -1,4 +1,5 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, memo } from "react";
+import { windowRange, WINDOW_THRESHOLD } from "../utils/windowRange";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 type TxType = "create" | "validate" | "release" | "redirect";
@@ -332,6 +333,7 @@ export default function VaultTransactions() {
   const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
+  const [anchorIndex, setAnchorIndex] = useState(0);
 
   const copy = useCallback((text: string, id: string) => {
     navigator.clipboard.writeText(text).catch(() => {});
@@ -375,6 +377,13 @@ export default function VaultTransactions() {
   const failed = filtered.filter((t) => t.status === "failed");
   const rest = filtered.filter((t) => t.status === "confirmed");
 
+  // Reset window anchor when filters change so the user always sees the top.
+  // windowRange is applied per-section; each section independently does not
+  // exceed WINDOW_THRESHOLD in typical use, but large "confirmed" lists will.
+  const pendingWindow = windowRange(pending, anchorIndex);
+  const failedWindow = windowRange(failed, anchorIndex);
+  const restWindow = windowRange(rest, anchorIndex);
+
   const stats = useMemo(
     () => ({
       total: MOCK_TRANSACTIONS.length,
@@ -391,6 +400,7 @@ export default function VaultTransactions() {
     setSearchHash("");
     setAmountMin("");
     setAmountMax("");
+    setAnchorIndex(0);
   };
 
   const hasFilters =
@@ -524,7 +534,7 @@ export default function VaultTransactions() {
           {/* Pending */}
           {pending.length > 0 && (
             <Section title="Pending" accent="#fcd34d" count={pending.length}>
-              {pending.map((tx) => (
+              {pendingWindow.items.map((tx) => (
                 <TxRow
                   key={tx.id}
                   tx={tx}
@@ -533,13 +543,22 @@ export default function VaultTransactions() {
                   copiedId={copiedId}
                 />
               ))}
+              {pendingWindow.windowed && (
+                <WindowBanner
+                  start={pendingWindow.startIndex}
+                  end={pendingWindow.endIndex}
+                  total={pending.length}
+                  onPrev={() => setAnchorIndex((a) => Math.max(0, a - 10))}
+                  onNext={() => setAnchorIndex((a) => Math.min(pending.length - 1, a + 10))}
+                />
+              )}
             </Section>
           )}
 
           {/* Failed */}
           {failed.length > 0 && (
             <Section title="Failed" accent="#fca5a5" count={failed.length}>
-              {failed.map((tx) => (
+              {failedWindow.items.map((tx) => (
                 <TxRow
                   key={tx.id}
                   tx={tx}
@@ -550,6 +569,15 @@ export default function VaultTransactions() {
                   <button className="vt-retry-btn">Retry →</button>
                 </TxRow>
               ))}
+              {failedWindow.windowed && (
+                <WindowBanner
+                  start={failedWindow.startIndex}
+                  end={failedWindow.endIndex}
+                  total={failed.length}
+                  onPrev={() => setAnchorIndex((a) => Math.max(0, a - 10))}
+                  onNext={() => setAnchorIndex((a) => Math.min(failed.length - 1, a + 10))}
+                />
+              )}
             </Section>
           )}
 
@@ -558,15 +586,26 @@ export default function VaultTransactions() {
             {rest.length === 0 ? (
               <EmptyState hasFilters={hasFilters} onClear={clearFilters} />
             ) : (
-              rest.map((tx) => (
-                <TxRow
-                  key={tx.id}
-                  tx={tx}
-                  onSelect={setSelectedTx}
-                  onCopy={copy}
-                  copiedId={copiedId}
-                />
-              ))
+              <>
+                {restWindow.items.map((tx) => (
+                  <TxRow
+                    key={tx.id}
+                    tx={tx}
+                    onSelect={setSelectedTx}
+                    onCopy={copy}
+                    copiedId={copiedId}
+                  />
+                ))}
+                {restWindow.windowed && (
+                  <WindowBanner
+                    start={restWindow.startIndex}
+                    end={restWindow.endIndex}
+                    total={rest.length}
+                    onPrev={() => setAnchorIndex((a) => Math.max(0, a - 10))}
+                    onNext={() => setAnchorIndex((a) => Math.min(rest.length - 1, a + 10))}
+                  />
+                )}
+              </>
             )}
           </Section>
         </div>
@@ -632,7 +671,7 @@ interface TxRowProps {
   children?: React.ReactNode;
 }
 
-function TxRow({ tx, onSelect, onCopy, copiedId, children }: TxRowProps) {
+const TxRow = memo(function TxRow({ tx, onSelect, onCopy, copiedId, children }: TxRowProps) {
   const meta = TYPE_META[tx.type];
   const status = STATUS_META[tx.status];
   const Icon = meta.icon;
@@ -703,7 +742,7 @@ function TxRow({ tx, onSelect, onCopy, copiedId, children }: TxRowProps) {
       {children && <div role="cell">{children}</div>}
     </div>
   );
-}
+});
 
 interface TxModalProps {
   tx: Transaction;
@@ -912,6 +951,33 @@ function EmptyState({ hasFilters, onClear }: EmptyStateProps) {
           Clear filters
         </button>
       )}
+    </div>
+  );
+}
+
+// ── WindowBanner ──────────────────────────────────────────────────────────────
+interface WindowBannerProps {
+  start: number;
+  end: number;
+  total: number;
+  onPrev: () => void;
+  onNext: () => void;
+}
+
+function WindowBanner({ start, end, total, onPrev, onNext }: WindowBannerProps) {
+  return (
+    <div className="vt-window-banner">
+      <span className="vt-window-info">
+        Showing {start + 1}–{end} of {total}
+      </span>
+      <div className="vt-window-nav">
+        <button className="vt-window-btn" onClick={onPrev} disabled={start === 0}>
+          ← Prev
+        </button>
+        <button className="vt-window-btn" onClick={onNext} disabled={end >= total}>
+          Next →
+        </button>
+      </div>
     </div>
   );
 }
@@ -1312,6 +1378,23 @@ const CSS = `
     font-size: 13px; color: #6ee7b7; text-decoration: none; font-weight: 600; transition: opacity var(--duration-fast) var(--ease-in-out);
   }
   .vt-explorer-link:hover { opacity: 0.75; }
+
+  .vt-window-banner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 14px; margin-top: 8px;
+    background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius-md); gap: 12px; flex-wrap: wrap;
+  }
+  .vt-window-info { font-size: 12px; color: #64748b; font-weight: 600; }
+  .vt-window-nav { display: flex; gap: 8px; }
+  .vt-window-btn {
+    background: rgba(110,231,183,0.08); border: 1px solid rgba(110,231,183,0.2);
+    color: #6ee7b7; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700;
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    transition: all var(--duration-normal) var(--ease-in-out);
+  }
+  .vt-window-btn:hover:not(:disabled) { background: rgba(110,231,183,0.15); }
+  .vt-window-btn:disabled { opacity: 0.3; cursor: default; }
 
   @media (max-width: 680px) {
     .vt-wrap { padding: 28px 16px 60px; }
