@@ -54,6 +54,7 @@ export type ValidationTask = {
   milestone: string;
   evidenceUrl?: string;
   notes?: string;
+  criteria?: string[];
 };
 
 type VerifierStoreType = {
@@ -77,6 +78,11 @@ const initialPending: ValidationTask[] = [
     status: 'pending',
     milestone: 'Beta Release Deployment',
     evidenceUrl: 'https://github.com/example/release-v1',
+    criteria: [
+      'Deployment URL is live and publicly accessible',
+      'All critical bugs from the backlog are resolved',
+      'Release notes are published',
+    ],
   },
   {
     id: 'v-102',
@@ -88,6 +94,10 @@ const initialPending: ValidationTask[] = [
     status: 'pending',
     milestone: 'Design System Figma Delivery',
     evidenceUrl: 'https://figma.com/example-link',
+    criteria: [
+      'Figma file is shared with the org',
+      'All component pages are complete',
+    ],
   }
 ];
 
