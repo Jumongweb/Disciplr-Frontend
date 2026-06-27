@@ -33,7 +33,10 @@ export default function NotificationSettings() {
   const [quietHours, setQuietHours] = useState("12:00");
   return (
     <>
-      <div className="w-full rounded-md z-20 px-3 py-3 notification-settings-panel">
+      <div 
+        className="w-full rounded-md px-3 py-3 notification-settings-panel"
+        style={{ zIndex: 'var(--z-index-base)' }}
+      >
         <Text role="title" as="h2">Notification Settings</Text>
         <div>
           <div className="grid grid-cols-2 justify-center items-center mt-5">
@@ -92,7 +95,10 @@ export default function NotificationSettings() {
         </div>
       </div>
 
-      <div className="w-full rounded-md z-20 px-3 py-3 mt-5 notification-settings-panel">
+      <div 
+        className="w-full rounded-md px-3 py-3 mt-5 notification-settings-panel"
+        style={{ zIndex: 'var(--z-index-base)' }}
+      >
         <Text role="title" as="h2">Vault Notifications</Text>
         {vaults.map((v) => (
           <div className="grid grid-cols-2 justify-center items-center mt-5" key={v.name}>

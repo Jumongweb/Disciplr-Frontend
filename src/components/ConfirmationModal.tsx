@@ -59,7 +59,8 @@ export function ConfirmationModal({
       {isOpen && (
         <FocusTrap focusTrapOptions={{ allowOutsideClick: true, escapeDeactivates: true, onDeactivate: onClose }}>
           <div 
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed inset-0 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            style={{ zIndex: 'var(--z-index-modal)' }}
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-title"
