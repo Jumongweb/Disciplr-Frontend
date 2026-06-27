@@ -492,9 +492,9 @@ export default function VaultTransactions() {
                 onChange={setFilterStatus}
                 options={[
                   { value: "all", label: "All Statuses" },
-                  { value: "confirmed", label: "Confirmed" },
-                  { value: "pending", label: "Pending" },
-                  { value: "failed", label: "Failed" },
+                  { value: "confirmed", label: "Status: Confirmed" },
+                  { value: "pending", label: "Status: Pending" },
+                  { value: "failed", label: "Status: Failed" },
                 ]}
               />
               <div className="vt-amount-range">

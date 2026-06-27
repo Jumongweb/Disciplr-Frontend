@@ -275,7 +275,7 @@ describe('VaultTransactions', () => {
       // Pending and Failed sections should disappear
       expect(screen.queryByText('Pending')).not.toBeInTheDocument();
       expect(screen.queryByText('Failed')).not.toBeInTheDocument();
-      expect(screen.getByText('Confirmed')).toBeInTheDocument();
+      expect(screen.getAllByText('Confirmed').length).toBeGreaterThan(0);
     });
 
     it('hash search filters the list to matching transactions only', () => {

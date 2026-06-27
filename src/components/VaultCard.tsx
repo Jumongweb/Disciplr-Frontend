@@ -156,7 +156,6 @@ export default function VaultCard({
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <UrgencyBadge tier={urgency} />
           <StatusBadge status={status} />
-          <StatusChip status={status} size="sm" label={status === 'pending_validation' ? 'Pending' : undefined} />
         </div>
         <div style={{ gridColumn: '1 / -1' }}>
           <VaultProgressBar value={progressPct} label={`${name} progress`} />

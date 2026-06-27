@@ -37,3 +37,20 @@ export function assertNotificationSettingsSource(source: string) {
 }
 
 export const notificationSettingsThemeTestCases = sourceAssertions.map(({ name }) => name);
+
+import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
+const source = readFileSync(
+  resolve(__dirname, '../NotificationSettings.tsx'),
+  'utf8',
+);
+
+describe('NotificationSettings theming', () => {
+  notificationSettingsThemeTestCases.forEach((name) => {
+    it(name, () => {
+      expect(() => assertNotificationSettingsSource(source)).not.toThrow();
+    });
+  });
+});

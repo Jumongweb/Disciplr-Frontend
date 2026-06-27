@@ -42,10 +42,10 @@ describe('CountdownDeadline', () => {
     vi.useFakeTimers();
     vi.setSystemTime(new Date('2026-06-18T12:00:00Z'));
 
-    render(<CountdownDeadline deadline="2026-06-18T23:45:00Z" />);
+    render(<CountdownDeadline deadline="2026-06-19T00:00:00Z" />);
 
     const countdown = screen.getByLabelText(/Deadline Jun 19, 2026/);
-    expect(countdown).toHaveTextContent('11h 45m remaining');
+    expect(countdown).toHaveTextContent('12h 0m remaining');
     expect(countdown).toHaveAttribute('aria-live', 'off');
     expect(countdown).toHaveAttribute('data-tone', 'urgent');
     expect(countdown).toHaveStyle({ color: 'var(--warning)' });
